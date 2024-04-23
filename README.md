@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Airline Route Mapper
 
 Airline Route Mapper is a Python-based application designed to find the shortest path between two airports based on the distances between them, utilizing Dijkstra's algorithm for efficient route calculation.
@@ -15,3 +16,8 @@ Airline Route Mapper leverages Dijkstra's algorithm to calculate the shortest pa
 - Calculates and displays the total distance of the route.
 
 
+=======
+# Airline-Route-Mapper
+
+The Airline Route Mapper is a Python-based application designed to assist pilots and aviation professionals in identifying suitable airports for landing based on the characteristics of a specific runway, including its length and width. 
+>>>>>>> e1cdc0161219c6ba743e1ebcc59b492835d7484b
