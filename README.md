@@ -14,7 +14,7 @@ Airline Route Mapper leverages Dijkstra's algorithm to calculate the shortest pa
 - Displays detailed information about airports involved in the route.
 - Calculates and displays the total distance of the route.
 
-## How to Use
+## How to Run
 
 1. **Install Dependencies**: Make sure you have Python installed on your system. You will need to install the following Python packages:
     ```bash

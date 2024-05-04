@@ -60,12 +60,15 @@ class AirportDataset:
         plt.tight_layout()
         plt.show()
 
+    def display_graph(self):
+        airline_dataset = AirlineRoutesDataset('routes.csv')
+        airport_dataset = AirportDataset('airports.csv', 'runways.csv')
+
+        airline_dataset.plot_airline_distribution()
+        airport_dataset.classify_airport_size()
+
+        plt.show()
+
 
 if __name__ == "__main__":
-    airline_dataset = AirlineRoutesDataset('routes.csv')
-    airport_dataset = AirportDataset('airports.csv', 'runways.csv')
-
-    airline_dataset.plot_airline_distribution()
-    airport_dataset.classify_airport_size()
-
-    plt.show()
+    display_graph()

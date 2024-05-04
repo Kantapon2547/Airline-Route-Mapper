@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 import csv
-import folium
 import webbrowser
+import folium
+import data_graph
 
 
 class AirlineRouteMapperApp:
@@ -33,7 +34,11 @@ class AirlineRouteMapperApp:
 
         # Show Map Button
         self.show_map_button = ttk.Button(self.root, text="Show Map", command=self.show_map)
-        self.show_map_button.grid(row=6, column=1, sticky=tk.SE, padx=10, pady=5)
+        self.show_map_button.grid(row=4, column=0, sticky=tk.E, padx=10, pady=5)
+
+        # Show Graph Button
+        self.show_graph_button = ttk.Button(self.root, text="Show Graph", command=self.show_graph)
+        self.show_graph_button.grid(row=4, column=1, sticky=tk.W, padx=10, pady=5)
 
         # Airport Table with Scrollbar
         self.airport_tree = ttk.Treeview(self.root, columns=("Airport Name", "City", "Country"))
@@ -44,10 +49,10 @@ class AirlineRouteMapperApp:
 
         # Add scrollbars
         tree_scroll = ttk.Scrollbar(self.root, orient="vertical", command=self.airport_tree.yview)
-        tree_scroll.grid(row=4, column=2, sticky="ns")
+        tree_scroll.grid(row=5, column=2, sticky="ns")
         self.airport_tree.configure(yscrollcommand=tree_scroll.set)
 
-        self.airport_tree.grid(row=4, column=0, columnspan=2, padx=10, pady=5)
+        self.airport_tree.grid(row=5, column=0, columnspan=2, padx=10, pady=5)
 
         self.insert_data_from_csv("airports.csv", encoding='utf-8')
 
@@ -119,7 +124,11 @@ class AirlineRouteMapperApp:
     def show_map(self):
         webbrowser.open_new_tab("airport_map.html")
 
+    def show_graph(self):
+        data_graph.AirportDataset('airports.csv', 'runways.csv').display_graph()
 
+
+# Create the Tkinter application
 root = tk.Tk()
 app = AirlineRouteMapperApp(root)
 root.mainloop()
