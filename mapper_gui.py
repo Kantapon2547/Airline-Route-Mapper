@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, scrolledtext, Scrollbar
+from tkinter import ttk, scrolledtext
 import csv
 import folium
 import webbrowser
@@ -49,13 +49,12 @@ class AirlineRouteMapperApp:
 
         self.airport_tree.grid(row=4, column=0, columnspan=2, padx=10, pady=5)
 
-        # Insert data from CSV files
         self.insert_data_from_csv("airports.csv", encoding='utf-8')
 
     def insert_data_from_csv(self, filename, encoding='utf-8'):
         with open(filename, "r", encoding=encoding) as file:
             csv_reader = csv.reader(file)
-            next(csv_reader)  # Skip header row
+            next(csv_reader)
             for row in csv_reader:
                 airport_id, _, _, name, _, _, _, _, iso_country, _, city, *_ = row
                 display_data = f"{airport_id}, {name}", city, iso_country
@@ -65,7 +64,6 @@ class AirlineRouteMapperApp:
         origin_id = self.origin_entry.get()
         destination_id = self.destination_entry.get()
 
-        # Fetch airport details for origin and destination based on ID
         origin_data = self.get_airport_details(origin_id)
         destination_data = self.get_airport_details(destination_id)
 
@@ -76,7 +74,6 @@ class AirlineRouteMapperApp:
             print(f"Destination airport with ID {destination_id} not found.")
             return
 
-        # Display airport details
         self.display_airport_details(origin_data, destination_data)
 
     def get_airport_details(self, airport_id):
@@ -98,37 +95,31 @@ class AirlineRouteMapperApp:
         self.airport_details_text.insert(tk.END, f"Country: {destination_data[2]}\n")
 
     def display_route_on_map(self, origin_data, destination_data):
-        # Create a map centered around the origin airport
         origin_city = origin_data[1]
         m = folium.Map(location=self.get_coordinates(origin_city), zoom_start=8)
 
-        # Add markers for origin and destination airports
         origin_name = origin_data[0].split(", ")[1]
         destination_name = destination_data[0].split(", ")[1]
         folium.Marker(location=self.get_coordinates(origin_city), popup=f"Origin: {origin_name}").add_to(m)
         destination_city = destination_data[1]
         folium.Marker(location=self.get_coordinates(destination_city), popup=f"Destination: {destination_name}").add_to(m)
 
-        # Save the map as an HTML file
         m.save("airport_map.html")
 
     def get_coordinates(self, city_name):
-        # Search for the city in the airport data and extract its latitude and longitude
         for item in self.airport_tree.get_children():
             airport_id = self.airport_tree.item(item, "text")
             airport_data = self.airport_tree.item(item, "values")
             if airport_data[1] == city_name:
-                # Extract latitude and longitude from airport data
-                latitude = float(airport_data[4])  # Latitude at index 4
-                longitude = float(airport_data[5])  # Longitude at index 5
+                latitude = float(airport_data[4])
+                longitude = float(airport_data[5])
                 return latitude, longitude
-        return 0, 0  # Return (0, 0) if coordinates not found
+        return 0, 0
 
     def show_map(self):
         webbrowser.open_new_tab("airport_map.html")
 
 
-# Create the Tkinter application
 root = tk.Tk()
 app = AirlineRouteMapperApp(root)
 root.mainloop()
