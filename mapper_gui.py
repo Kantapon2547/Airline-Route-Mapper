@@ -58,7 +58,7 @@ class AirlineRouteMapperApp:
 
         self.airport_tree.grid(row=5, column=0, columnspan=2, padx=10, pady=5)
 
-        self.insert_data_from_csv("airports.csv", encoding='utf-8')
+        self.insert_data_from_csv("data/airports.csv", encoding='utf-8')
 
     def insert_data_from_csv(self, filename, encoding='utf-8'):
         with open(filename, "r", encoding=encoding) as file:
@@ -136,7 +136,7 @@ class AirlineRouteMapperApp:
         webbrowser.open_new_tab("airport_map.html")
 
     def show_graph(self):
-        data_graph.AirportDataset('airports.csv', 'runways.csv').display_graph()
+        data_graph.AirportDataset('data/airports.csv', 'data/runways.csv').display_graph()
 
     def clear_data(self):
         self.origin_entry.delete(0, tk.END)
