@@ -38,7 +38,7 @@ Airline Route Mapper leverages Dijkstra's algorithm to calculate the shortest pa
 
 7. **View Route Details**: The application will display detailed information about the origin and destination airports, including their IDs, cities, and countries.
 
-8. **Display Route on Map**: Click on the "Show Map" button to visualize the calculated route on a map.
+8. **Display Route on Map**: Click on the "Show Map" button to visualize the calculated route on a map by showing the pin of origin and destination.
 
 9. **Interact with Map**: You can interact with the map to zoom in/out and pan around to explore the route.
 

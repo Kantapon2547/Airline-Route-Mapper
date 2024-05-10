@@ -28,6 +28,10 @@ class AirlineRouteMapperApp:
         self.calculate_button = ttk.Button(self.root, text="Calculate Route", command=self.calculate_route)
         self.calculate_button.grid(row=2, columnspan=2, padx=10, pady=5)
 
+        # Clear Button
+        self.clear_button = ttk.Button(self.root, text="Clear", command=self.clear_data)
+        self.clear_button.grid(row=2, column=1, padx=10, pady=5)
+
         # Text widget to display airport details
         self.airport_details_text = scrolledtext.ScrolledText(self.root, width=60, height=10, wrap=tk.WORD)
         self.airport_details_text.grid(row=3, column=0, columnspan=2, padx=10, pady=5)
@@ -61,8 +65,8 @@ class AirlineRouteMapperApp:
             csv_reader = csv.reader(file)
             next(csv_reader)
             for row in csv_reader:
-                airport_id, _, _, name, _, _, _, _, iso_country, _, city, *_ = row
-                display_data = f"{airport_id}, {name}", city, iso_country
+                airport_id, _, _, name, latitude_deg, longitude_deg, _, _, iso_country, _, city, *_ = row
+                display_data = f"{airport_id}, {name}", city, iso_country, latitude_deg, longitude_deg
                 self.airport_tree.insert("", tk.END, text=airport_id, values=display_data)
 
     def calculate_route(self):
@@ -80,6 +84,7 @@ class AirlineRouteMapperApp:
             return
 
         self.display_airport_details(origin_data, destination_data)
+        self.display_route_on_map(origin_data, destination_data)  # Call this method to display the route on the map
 
     def get_airport_details(self, airport_id):
         for item in self.airport_tree.get_children():
@@ -100,14 +105,20 @@ class AirlineRouteMapperApp:
         self.airport_details_text.insert(tk.END, f"Country: {destination_data[2]}\n")
 
     def display_route_on_map(self, origin_data, destination_data):
-        origin_city = origin_data[1]
-        m = folium.Map(location=self.get_coordinates(origin_city), zoom_start=8)
+        m = folium.Map(location=[0, 0], zoom_start=2)  # Initial map with a default location
 
+        # Add origin pin
+        origin_latitude, origin_longitude = float(origin_data[3]), float(origin_data[4])
         origin_name = origin_data[0].split(", ")[1]
+        origin_popup = f"<a href='https://www.google.com/maps/search/?api=1&query={origin_latitude},{origin_longitude}'>Origin: {origin_name}</a>"
+        folium.Marker(location=[origin_latitude, origin_longitude], popup=origin_popup, parse_html=True).add_to(m)
+
+        # Add destination pin
+        destination_latitude, destination_longitude = float(destination_data[3]), float(destination_data[4])
         destination_name = destination_data[0].split(", ")[1]
-        folium.Marker(location=self.get_coordinates(origin_city), popup=f"Origin: {origin_name}").add_to(m)
-        destination_city = destination_data[1]
-        folium.Marker(location=self.get_coordinates(destination_city), popup=f"Destination: {destination_name}").add_to(m)
+        destination_popup = f"<a href='https://www.google.com/maps/search/?api=1&query={destination_latitude},{destination_longitude}'>Destination: {destination_name}</a>"
+        folium.Marker(location=[destination_latitude, destination_longitude], popup=destination_popup,
+                      parse_html=True).add_to(m)
 
         m.save("airport_map.html")
 
@@ -116,8 +127,8 @@ class AirlineRouteMapperApp:
             airport_id = self.airport_tree.item(item, "text")
             airport_data = self.airport_tree.item(item, "values")
             if airport_data[1] == city_name:
-                latitude = float(airport_data[4])
-                longitude = float(airport_data[5])
+                latitude = float(airport_data[3])
+                longitude = float(airport_data[4])
                 return latitude, longitude
         return 0, 0
 
@@ -127,8 +138,12 @@ class AirlineRouteMapperApp:
     def show_graph(self):
         data_graph.AirportDataset('airports.csv', 'runways.csv').display_graph()
 
+    def clear_data(self):
+        self.origin_entry.delete(0, tk.END)
+        self.destination_entry.delete(0, tk.END)
+        self.airport_details_text.delete(1.0, tk.END)
 
-# Create the Tkinter application
+
 root = tk.Tk()
 app = AirlineRouteMapperApp(root)
 root.mainloop()
