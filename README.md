@@ -44,7 +44,7 @@ Airline Route Mapper leverages Dijkstra's algorithm to calculate the shortest pa
 
 10. **Exit the Application**: Close the application window when done.
 
-Homepage : https://github.com/Kantapon2547/Airline-Route-Mapper.wiki.git
+Homepage : https://github.com/Kantapon2547/Airline-Route-Mapper/wiki
 
-Proposal : https://github.com/Kantapon2547/Airline-Route-Mapper.wiki.git
+Proposal : https://github.com/Kantapon2547/Airline-Route-Mapper/wiki/Project-proposal
 
