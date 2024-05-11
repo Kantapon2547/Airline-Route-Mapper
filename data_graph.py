@@ -60,15 +60,62 @@ class AirportDataset:
         plt.tight_layout()
         plt.show()
 
-    def display_graph(self):
-        airline_dataset = AirlineRoutesDataset('routes.csv')
-        airport_dataset = AirportDataset('airports.csv', 'runways.csv')
 
-        airline_dataset.plot_airline_distribution()
-        airport_dataset.classify_airport_size()
+class AirportDistributionPlotter:
+    def __init__(self, airports_file):
+        self.airports_df = pd.read_csv(airports_file)
 
+    def plot_distribution_by_country(self):
+        grouped = self.airports_df.groupby("iso_country").agg({
+            "latitude_deg": "mean",
+            "longitude_deg": "mean",
+            "elevation_ft": "mean"
+        })
+
+        top_20_countries = grouped.index[:20]  # Select only the top 20 countries
+        grouped_top_20 = grouped.loc[top_20_countries]
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        grouped_top_20.plot(kind="bar", ax=ax)
+        plt.title("Top 20 Airport Distribution by Country with Runway Characteristics and Elevation")
+        plt.xlabel("Country")
+        plt.ylabel("Average Values")
+        plt.xticks(rotation=45)
+        plt.tight_layout()
         plt.show()
 
 
-if __name__ == "__main__":
-    display_graph()
+class RouteGraphPlotter:
+    def __init__(self, route_data):
+        self.route_data = pd.read_csv('data/routes.csv')
+
+    def plot_source_airport_frequency(self):
+        plt.figure(figsize=(14, 8))  # Adjust the figure size as needed
+        source_counts = self.route_data['Source airport ID'].value_counts().head(20)  # Count the frequency of each source airport ID
+        source_counts.plot(kind='bar')  # Plot as a bar graph
+        plt.title('Frequency of Routes Departing from Source Airports (Top 20)')
+        plt.xlabel('Source Airport ID')
+        plt.ylabel('Frequency')
+        plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+        plt.tight_layout()
+        plt.show()
+
+    def plot_destination_airport_frequency(self):
+        plt.figure(figsize=(10, 6))
+        sns.countplot(x='Destination Airport', data=self.route_data.head(20))  # Select only the first 20 rows
+        plt.title('Frequency of Routes Arriving at Destination Airports (Top 20)')
+        plt.xlabel('Destination Airport')
+        plt.ylabel('Frequency')
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.show()
+
+    def plot_route_graph(self):
+        plt.figure(figsize=(14, 8))
+        sns.countplot(x='Source airport ID', data=self.route_data.head(20))  # Select only the first 20 rows
+        plt.title('Distribution of Routes Among Different Airlines (Top 20)')
+        plt.xlabel('Source Airport ID')
+        plt.ylabel('Frequency')
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.show()

@@ -3,7 +3,7 @@ from tkinter import ttk, scrolledtext
 import csv
 import webbrowser
 import folium
-import data_graph
+from data_graph import AirlineRoutesDataset, AirportDataset, AirportDistributionPlotter, RouteGraphPlotter
 
 
 class AirlineRouteMapperApp:
@@ -59,6 +59,14 @@ class AirlineRouteMapperApp:
         self.airport_tree.grid(row=5, column=0, columnspan=2, padx=10, pady=5)
 
         self.insert_data_from_csv("data/airports.csv", encoding='utf-8')
+
+        # Graph selection
+        self.graph_selection = tk.StringVar(value="Airport Distribution")
+        ttk.Label(self.root, text="Graph Selection:", background='light blue').grid(row=6, column=0, padx=10, pady=5, sticky=tk.W)
+        self.graph_options = ttk.Combobox(self.root, textvariable=self.graph_selection, state='readonly')
+        self.graph_options['values'] = ["Airport Distribution", "Airport Size Classification", "Airline Distribution", "Route Graph"]
+        self.graph_options.grid(row=6, column=1, padx=10, pady=5)
+        self.graph_options.bind("<<ComboboxSelected>>", self.update_graph)
 
     def insert_data_from_csv(self, filename, encoding='utf-8'):
         with open(filename, "r", encoding=encoding) as file:
@@ -135,8 +143,19 @@ class AirlineRouteMapperApp:
     def show_map(self):
         webbrowser.open_new_tab("airport_map.html")
 
+    def update_graph(self, event=None):
+        graph_type = self.graph_selection.get()
+        if graph_type == "Airport Distribution":
+            AirportDistributionPlotter("data/airports.csv").plot_distribution_by_country()
+        elif graph_type == "Airport Size Classification":
+            AirportDataset('data/airports.csv', 'data/runways.csv').classify_airport_size()
+        elif graph_type == "Airline Distribution":
+            AirlineRoutesDataset('data/routes.csv').plot_airline_distribution()
+        elif graph_type == "Route Graph":
+            RouteGraphPlotter('routes.csv').plot_route_graph()
+
     def show_graph(self):
-        data_graph.AirportDataset('data/airports.csv', 'data/runways.csv').display_graph()
+        self.update_graph()
 
     def clear_data(self):
         self.origin_entry.delete(0, tk.END)
